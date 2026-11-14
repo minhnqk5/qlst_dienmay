@@ -5,3 +5,5 @@ target/
 .project
 .settings/
 nbproject/
+database/
+README.md
