@@ -1,13 +1,15 @@
 drop database if exists qlst_dienmay;
 
+
 CREATE DATABASE IF NOT EXISTS qlst_dienmay
     CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE qlst_dienmay;
 
+-- ---------- Khach hang (module 1) ----------
 CREATE TABLE IF NOT EXISTS tblcustomer9 (
     id          INT           NOT NULL AUTO_INCREMENT,
     tenDangNhap VARCHAR(100)  NOT NULL,
-    matKhau     VARCHAR(255)  NOT NULL,
+    matKhau     VARCHAR(255)  NOT NULL,          
     ten         VARCHAR(255)  NOT NULL,
     sdt         VARCHAR(20)   NOT NULL,
     email       VARCHAR(255)  NOT NULL,
@@ -17,6 +19,7 @@ CREATE TABLE IF NOT EXISTS tblcustomer9 (
     UNIQUE KEY uq_customer_sdt (sdt)
 ) ENGINE=InnoDB;
 
+-- ---------- Nhan vien: Member + Manager + SalesStaff (ke thua bang khoa chinh chung) ----------
 CREATE TABLE IF NOT EXISTS tblmember9 (
     id          INT           NOT NULL AUTO_INCREMENT,
     tenDangNhap VARCHAR(100)  NOT NULL,
@@ -27,7 +30,9 @@ CREATE TABLE IF NOT EXISTS tblmember9 (
     diaChi      VARCHAR(255)  NOT NULL,
     viTri       VARCHAR(100)  NOT NULL,
     PRIMARY KEY (id),
-    UNIQUE KEY uq_member_username (tenDangNhap)
+    UNIQUE KEY uq_member_username (tenDangNhap),
+    UNIQUE KEY uq_member_sdt(sdt)
+    
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS tblmanager9 (
@@ -42,20 +47,20 @@ CREATE TABLE IF NOT EXISTS tblsalesstaff9 (
     CONSTRAINT fk_sales_member FOREIGN KEY (id) REFERENCES tblmember9 (id)
 ) ENGINE=InnoDB;
 
+-- ---------- Mat hang ----------
 CREATE TABLE IF NOT EXISTS tblproduct9 (
     id         INT           NOT NULL AUTO_INCREMENT,
     tenMatHang TEXT          NOT NULL,
     anh        VARCHAR(255)  NULL,
     hang       VARCHAR(255)  NULL,
-    baoHanh    FLOAT         NULL,
+    baoHanh    FLOAT         NULL,               
     donGia     DECIMAL(15,0) NOT NULL,
-    soLuong    INT UNSIGNED  NOT NULL DEFAULT 0,
+    soLuong    INT           NOT NULL DEFAULT 0,
     moTa       VARCHAR(255)  NULL,
-    PRIMARY KEY (id),
-    CONSTRAINT ck_product_baohanh CHECK (baoHanh IS NULL OR baoHanh >= 0),
-    CONSTRAINT ck_product_dongia  CHECK (donGia >= 0)
+    PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
+-- ---------- Don dat hang + hoa don truc tuyen ----------
 CREATE TABLE IF NOT EXISTS tblorder9 (
     id                INT          NOT NULL AUTO_INCREMENT,
     ngayDat           DATETIME     NOT NULL,
@@ -68,14 +73,12 @@ CREATE TABLE IF NOT EXISTS tblorder9 (
 
 CREATE TABLE IF NOT EXISTS tblorderdetail9 (
     id         INT           NOT NULL AUTO_INCREMENT,
-    soLuong    INT UNSIGNED  NOT NULL,
+    soLuong    INT           NOT NULL,
     donGia     DECIMAL(15,0) NOT NULL,
     thanhTien  DECIMAL(15,0) NOT NULL,
     order_id   INT           NOT NULL,
     product_id INT           NOT NULL,
     PRIMARY KEY (id),
-    CONSTRAINT ck_orderdetail_soluong CHECK (soLuong > 0),
-    CONSTRAINT ck_orderdetail_tien    CHECK (donGia >= 0 AND thanhTien >= 0),
     CONSTRAINT fk_orderdetail_order   FOREIGN KEY (order_id)   REFERENCES tblorder9 (id),
     CONSTRAINT fk_orderdetail_product FOREIGN KEY (product_id) REFERENCES tblproduct9 (id)
 ) ENGINE=InnoDB;
@@ -88,10 +91,10 @@ CREATE TABLE IF NOT EXISTS tblonlineinvoice9 (
     PRIMARY KEY (id),
     UNIQUE KEY uq_onlineinvoice_order (order_id),
     KEY idx_onlineinvoice_ngayGio (ngayGio),
-    CONSTRAINT ck_onlineinvoice_tien CHECK (thanhTien >= 0),
     CONSTRAINT fk_onlineinvoice_order FOREIGN KEY (order_id) REFERENCES tblorder9 (id)
 ) ENGINE=InnoDB;
 
+-- ---------- Hoa don vang lai (mua tai quay) ----------
 CREATE TABLE IF NOT EXISTS tblwalkininvoice9 (
     id            INT           NOT NULL AUTO_INCREMENT,
     ngayGio       DATETIME      NOT NULL,
@@ -101,23 +104,31 @@ CREATE TABLE IF NOT EXISTS tblwalkininvoice9 (
     salesStaff_id INT           NOT NULL,
     PRIMARY KEY (id),
     KEY idx_walkin_sdt_ngayGio (sdt, ngayGio),
-    CONSTRAINT ck_walkin_tien CHECK (tongTien >= 0),
     CONSTRAINT fk_walkin_salesstaff FOREIGN KEY (salesStaff_id) REFERENCES tblsalesstaff9 (id)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS tblwalkininvoicedetail9 (
-    id              INT           NOT NULL AUTO_INCREMENT,
-    soLuong         INT UNSIGNED  NOT NULL,
-    thanhTien       DECIMAL(15,0) NOT NULL,
-    product_id      INT           NOT NULL,
-    walkInInvoice_id INT          NOT NULL,
+    id               INT           NOT NULL AUTO_INCREMENT,
+    soLuong          INT UNSIGNED  NOT NULL,
+    donGia           DECIMAL(15,0) NOT NULL,
+    thanhTien        DECIMAL(15,0) NOT NULL,
+    product_id       INT           NOT NULL,
+    walkInInvoice_id INT           NOT NULL,
     PRIMARY KEY (id),
     CONSTRAINT ck_walkindetail_soluong CHECK (soLuong > 0),
-    CONSTRAINT ck_walkindetail_tien    CHECK (thanhTien >= 0),
-    CONSTRAINT fk_walkindetail_product FOREIGN KEY (product_id)       REFERENCES tblproduct9 (id),
-    CONSTRAINT fk_walkindetail_invoice FOREIGN KEY (walkInInvoice_id) REFERENCES tblwalkininvoice9 (id)
+    CONSTRAINT ck_walkindetail_tien CHECK (donGia >= 0 AND thanhTien >= 0),
+    CONSTRAINT fk_walkindetail_product FOREIGN KEY (product_id)
+        REFERENCES tblproduct9 (id),
+    CONSTRAINT fk_walkindetail_invoice FOREIGN KEY (walkInInvoice_id)
+        REFERENCES tblwalkininvoice9 (id)
 ) ENGINE=InnoDB;
 
+
+
+
+
+
+USE qlst_dienmay;
 
 INSERT INTO tblmember9 (id, tenDangNhap, matKhau, ten, sdt, email, diaChi, viTri) VALUES
  (1,   'quanly',    'pbkdf2$65536$dWl9iwd4B8VQC+3YJXL4ng==$v+iLL8GTdchTdphYS04AvtZAieaB//5yIuVtaz+fk10=',   'Đỗ Quản Lý',   '0988000001', 'quanly@qlst.vn',   'Hà Nội', 'Nhân viên quản lí'),
@@ -139,17 +150,21 @@ INSERT INTO tblproduct9 (id, tenMatHang, anh, hang, baoHanh, donGia, soLuong, mo
  (4, 'Điều hòa Daikin 1.5HP Inverter', NULL, 'Daikin',    36, 12900000, 25, 'Điều hòa 1 chiều'),
  (5, 'Tủ lạnh Panasonic 450L',         NULL, 'Panasonic', 24, 16250000, 10, 'Tủ lạnh 4 cửa');
 
+-- ---- Hoa don vang lai (mua tai quay, nhan vien SS412) ----
 INSERT INTO tblwalkininvoice9 (id, ngayGio, tenKhachHang, sdt, tongTien, salesStaff_id) VALUES
- (250, '2026-08-20 09:00:00', 'Nguyễn Văn An', '0901000071', 17000000, 412),
+ (250, '2026-08-20 09:00:00', 'Nguyễn Văn An', '0901000071', 17000000, 412),  -- NGOAI khoang thoi gian
  (265, '2026-09-10 08:30:00', 'Nguyễn Văn An', '0901000071', 34000000, 412),
  (270, '2026-09-12 10:15:00', 'Trần Thị Bình', '0901000025', 16250000, 412),
  (277, '2026-09-15 14:00:00', 'Nguyễn Văn An', '0901000071', 17000000, 412);
-INSERT INTO tblwalkininvoicedetail9 (soLuong, thanhTien, product_id, walkInInvoice_id) VALUES
- (1, 17000000, 1, 250),
- (2, 34000000, 1, 265),
- (1, 16250000, 5, 270),
- (1, 17000000, 1, 277);
+INSERT INTO tblwalkininvoicedetail9
+    (soLuong, donGia, thanhTien, product_id, walkInInvoice_id)
+VALUES
+    (1, 17000000, 17000000, 1, 250),
+    (2, 17000000, 34000000, 1, 265),
+    (1, 16250000, 16250000, 5, 270),
+    (1, 17000000, 17000000, 1, 277);
 
+-- ---- Don dat hang + hoa don truc tuyen ----
 INSERT INTO tblorder9 (id, ngayDat, tinhTrangThanhToan, diaChiGiaoHang, customer_id) VALUES
  (1, '2026-09-11 15:00:00', 'Đã thanh toán', 'Bắc Ninh',  25),
  (2, '2026-09-14 09:30:00', 'Đã thanh toán', 'Hà Nội',    103),
@@ -162,3 +177,24 @@ INSERT INTO tblonlineinvoice9 (id, ngayGio, thanhTien, order_id) VALUES
  (1, '2026-09-11 15:20:00', 16250000, 1),
  (2, '2026-09-14 09:45:00', 25800000, 2),
  (3, '2026-09-17 20:30:00', 12000000, 3);
+ 
+ 
+ -- 1. Thêm đơn đặt hàng
+INSERT INTO tblorder9
+    (id, ngayDat, tinhTrangThanhToan, diaChiGiaoHang, customer_id)
+VALUES
+    (4, '2026-09-01 09:00:00', 'Đã thanh toán', 'Hà Nội', 71);
+
+
+-- 2. Thêm chi tiết đơn hàng
+INSERT INTO tblorderdetail9
+    (soLuong, donGia, thanhTien, order_id, product_id)
+VALUES
+    (1, 17000000, 17000000, 4, 1);
+
+
+-- 3. Thêm hóa đơn trực tuyến
+INSERT INTO tblonlineinvoice9
+    (id, ngayGio, thanhTien, order_id)
+VALUES
+    (4, '2026-09-01 09:15:00', 17000000, 4);

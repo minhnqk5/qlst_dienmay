@@ -20,6 +20,11 @@ public class DAO {
     }
 
     protected synchronized Connection connection() throws SQLException {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new SQLException("MySQL JDBC driver is missing from the application classpath", e);
+        }
         if (con == null || !con.isValid(2)) {
             con = DriverManager.getConnection(URL, USER, PASSWORD);
         }

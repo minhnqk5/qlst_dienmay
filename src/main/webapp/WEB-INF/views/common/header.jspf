@@ -5,13 +5,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><c:out value="${pageTitle}" default="QLST Điện máy"/> · QLST Điện máy</title>
+    <title><c:out value="${pageTitle}" default="QLST Điện máy"/></title>
     <link rel="stylesheet" href="<c:url value='/assets/style.css'/>">
 </head>
 <body>
 
+<c:choose>
+    <c:when test="${pageTitle eq 'Đăng nhập'}">
+        <c:url var="brandUrl" value="/login"/>
+    </c:when>
+    <c:when test="${pageTitle eq 'Kết quả đăng ký'}">
+        <c:set var="brandUrl" value="#"/>
+    </c:when>
+    <c:when test="${not empty sessionScope.manager}">
+        <c:url var="brandUrl" value="/manager/home"/>
+    </c:when>
+    <c:otherwise>
+        <c:url var="brandUrl" value="/register"/>
+    </c:otherwise>
+</c:choose>
+
 <header class="topbar">
-    <a class="brand" href="<c:url value='/'/>">QLST Điện máy</a>
+    <a class="brand" href="<c:out value='${brandUrl}'/>">QLST Điện máy</a>
 
     <div class="user-box">
         <c:choose>

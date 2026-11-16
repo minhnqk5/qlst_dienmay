@@ -5,6 +5,7 @@
 <c:set var="pageTitle" value="Thống kê khách hàng theo doanh thu" scope="request"/>
 <%@ include file="/WEB-INF/views/common/header.jspf" %>
 
+
 <section class="card">
     <h1>Thống kê khách hàng theo doanh thu</h1>
 
@@ -24,6 +25,12 @@
         <div class="alert alert-error"><c:out value="${error}"/></div>
     </c:if>
 
+
+
+
+
+
+
     <table class="table" id="tblTKDoanhThuKH">
         <thead>
         <tr>
@@ -35,6 +42,8 @@
             <th class="num">Tổng doanh thu (VNĐ)</th>
         </tr>
         </thead>
+        
+
         <tbody>
         <c:forEach var="s" items="${listDoanhThuKH}" varStatus="st">
             <c:url var="detailUrl" value="/manager/statistics/customer-revenue/transactions">
@@ -51,6 +60,7 @@
                 <td class="num"><fmt:formatNumber value="${s.doanhThuTrenKhachHang}" pattern="#,##0"/></td>
             </tr>
         </c:forEach>
+        
         <c:if test="${empty listDoanhThuKH}">
             <tr><td colspan="6" class="empty">
                 <c:choose>
@@ -60,15 +70,20 @@
             </td></tr>
         </c:if>
         </tbody>
+
         <c:if test="${not empty listDoanhThuKH}">
             <tfoot>
             <tr>
-                <td colspan="5" class="num"><b>Tổng doanh thu (${listDoanhThuKH[0].tongSoKhachMuaHang} khách hàng)</b></td>
-                <td class="num"><b><fmt:formatNumber value="${listDoanhThuKH[0].tongDoanhThu}" pattern="#,##0"/></b></td>
+                <td colspan="5" class="num"><b>Tổng doanh thu (${tongSoKhachMuaHang} khách hàng)</b></td>
+                <td class="num"><b><fmt:formatNumber value="${tongDoanhThu}" pattern="#,##0"/></b></td>
             </tr>
             </tfoot>
         </c:if>
     </table>
+
+
+
+
 
     <a class="btn btn-ghost" id="quayLai" href="<c:url value='/manager/statistics'/>">← Quay lại</a>
 </section>

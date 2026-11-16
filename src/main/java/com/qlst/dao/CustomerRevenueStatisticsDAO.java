@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomerRevenueStatisticDAO extends DAO {
+public class CustomerRevenueStatisticsDAO extends DAO {
 
     private static final String SQL =
         "SELECT c.id, c.tenDangNhap, c.ten, c.sdt, c.email, c.diaChi, "
@@ -20,16 +20,20 @@ public class CustomerRevenueStatisticDAO extends DAO {
       + "          COALESCE((SELECT SUM(od.soLuong) FROM tblorderdetail9 od WHERE od.order_id = o.id), 0) AS soLuong "
       + "   FROM tblonlineinvoice9 oi JOIN tblorder9 o ON o.id = oi.order_id "
       + "   WHERE oi.ngayGio >= ? AND oi.ngayGio < DATE_ADD(?, INTERVAL 1 DAY) "
+
       + "   UNION ALL "
-      + "   SELECT c2.id, w.tongTien, "
-      + "          COALESCE((SELECT SUM(d.soLuong) FROM tblwalkininvoicedetail9 d WHERE d.walkInInvoice_id = w.id), 0) "
-      + "   FROM tblwalkininvoice9 w JOIN tblcustomer9 c2 ON c2.sdt = w.sdt "
+
+      + "   SELECT c.id, w.tongTien AS thanhTien, "
+      + "          COALESCE((SELECT SUM(d.soLuong) FROM tblwalkininvoicedetail9 d WHERE d.walkInInvoice_id = w.id), 0) AS soLuong "
+      + "   FROM tblwalkininvoice9 w JOIN tblcustomer9 c ON c.sdt = w.sdt "
       + "   WHERE w.ngayGio >= ? AND w.ngayGio < DATE_ADD(?, INTERVAL 1 DAY) "
+      
       + ") t JOIN tblcustomer9 c ON c.id = t.customer_id "
+
       + "GROUP BY c.id, c.tenDangNhap, c.ten, c.sdt, c.email, c.diaChi "
       + "ORDER BY doanhThu DESC, c.id ASC";
 
-    public CustomerRevenueStatisticDAO() {
+    public CustomerRevenueStatisticsDAO() {
         super();
     }
 
@@ -52,19 +56,9 @@ public class CustomerRevenueStatisticDAO extends DAO {
                     s.setSoGiaoDich(rs.getInt("soGiaoDich"));
                     s.setTongSoLuong(rs.getInt("tongSoLuong"));
                     s.setDoanhThuTrenKhachHang(rs.getDouble("doanhThu"));
-                    s.setFrom(from);
-                    s.setTo(to);
                     list.add(s);
                 }
             }
-        }
-        double tong = 0;
-        for (CustomerRevenueStatistics9 s : list) {
-            tong += s.getDoanhThuTrenKhachHang();
-        }
-        for (CustomerRevenueStatistics9 s : list) {
-            s.setTongSoKhachMuaHang(list.size());
-            s.setTongDoanhThu(tong);
         }
         return list.toArray(new CustomerRevenueStatistics9[0]);
     }

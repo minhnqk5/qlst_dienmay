@@ -1,7 +1,9 @@
 package com.qlst.dao;
 
+import com.qlst.model.Product9;
 import com.qlst.model.SalesStaff9;
 import com.qlst.model.WalkInInvoice9;
+import com.qlst.model.WalkInInvoiceDetail9;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,11 +15,15 @@ import java.util.List;
 public class WalkInInvoiceDAO extends DAO {
 
     private static final String SQL =
-        "SELECT w.id, w.ngayGio, w.tenKhachHang, w.sdt, w.tongTien, w.salesStaff_id, m.ten AS staffName, "
-      + "       COALESCE((SELECT SUM(d.soLuong) FROM tblwalkininvoicedetail9 d WHERE d.walkInInvoice_id = w.id), 0) AS tongSoLuong "
+        "SELECT w.id, w.ngayGio, w.tenKhachHang, w.sdt, w.tongTien, w.salesStaff_id, m.ten AS staffName "
       + "FROM tblwalkininvoice9 w JOIN tblmember9 m ON m.id = w.salesStaff_id "
       + "WHERE w.sdt = ? AND w.ngayGio >= ? AND w.ngayGio < DATE_ADD(?, INTERVAL 1 DAY) "
       + "ORDER BY w.ngayGio";
+
+    private static final String SQL_DETAIL =
+        "SELECT d.id, d.soLuong, d.donGia, d.thanhTien, p.id AS product_id, p.tenMatHang "
+      + "FROM tblwalkininvoicedetail9 d JOIN tblproduct9 p ON p.id = d.product_id "
+      + "WHERE d.walkInInvoice_id = ? ORDER BY d.id";
 
     public WalkInInvoiceDAO() {
         super();
@@ -42,12 +48,37 @@ public class WalkInInvoiceDAO extends DAO {
                     inv.setTenKhachHang(rs.getString("tenKhachHang"));
                     inv.setSdt(rs.getString("sdt"));
                     inv.setTongTien(rs.getDouble("tongTien"));
-                    inv.setTongSoLuong(rs.getInt("tongSoLuong"));
                     inv.setSalesStaff(staff);
                     list.add(inv);
                 }
             }
         }
+        for (WalkInInvoice9 invoice : list) {
+            invoice.setDetail(getWalkInInvoiceDetail(invoice.getId()));
+        }
         return list.toArray(new WalkInInvoice9[0]);
+    }
+
+    private WalkInInvoiceDetail9[] getWalkInInvoiceDetail(int walkInInvoiceId) throws SQLException {
+        List<WalkInInvoiceDetail9> details = new ArrayList<>();
+        try (PreparedStatement ps = connection().prepareStatement(SQL_DETAIL)) {
+            ps.setInt(1, walkInInvoiceId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Product9 product = new Product9();
+                    product.setId(rs.getInt("product_id"));
+                    product.setTenMatHang(rs.getString("tenMatHang"));
+
+                    WalkInInvoiceDetail9 detail = new WalkInInvoiceDetail9();
+                    detail.setId(rs.getInt("id"));
+                    detail.setSoLuong(rs.getInt("soLuong"));
+                    detail.setDonGia(rs.getDouble("donGia"));
+                    detail.setThanhTien(rs.getDouble("thanhTien"));
+                    detail.setProduct(product);
+                    details.add(detail);
+                }
+            }
+        }
+        return details.toArray(new WalkInInvoiceDetail9[0]);
     }
 }

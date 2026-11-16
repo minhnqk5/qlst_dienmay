@@ -8,8 +8,8 @@ public class WalkInInvoice9 {
     private String tenKhachHang;
     private String sdt;
     private double tongTien;
-    private int tongSoLuong;
     private SalesStaff9 salesStaff;
+    private WalkInInvoiceDetail9[] detail;
 
     public WalkInInvoice9() {
     }
@@ -24,8 +24,17 @@ public class WalkInInvoice9 {
     public void setSdt(String sdt) { this.sdt = sdt; }
     public double getTongTien() { return tongTien; }
     public void setTongTien(double tongTien) { this.tongTien = tongTien; }
-    public int getTongSoLuong() { return tongSoLuong; }
-    public void setTongSoLuong(int tongSoLuong) { this.tongSoLuong = tongSoLuong; }
+    public int getTongSoLuong() {
+        int sum = 0;
+        if (detail != null) {
+            for (WalkInInvoiceDetail9 item : detail) {
+                sum += item.getSoLuong();
+            }
+        }
+        return sum;
+    }
     public SalesStaff9 getSalesStaff() { return salesStaff; }
     public void setSalesStaff(SalesStaff9 salesStaff) { this.salesStaff = salesStaff; }
+    public WalkInInvoiceDetail9[] getDetail() { return detail; }
+    public void setDetail(WalkInInvoiceDetail9[] detail) { this.detail = detail; }
 }

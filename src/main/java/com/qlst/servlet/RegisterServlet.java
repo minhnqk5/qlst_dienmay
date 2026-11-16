@@ -56,6 +56,8 @@ public class RegisterServlet extends HttpServlet {
 
         Map<String, String> errors = validate(form, matKhau, xacNhan);
 
+
+        
         if (errors.isEmpty()) {
             Customer9 c = new Customer9(form.get("tenDangNhap"), null,
                     form.get("ten"), form.get("sdt"), form.get("email"), form.get("diaChi"));
@@ -81,6 +83,7 @@ public class RegisterServlet extends HttpServlet {
                 errors.put("general", "Hệ thống đang gặp sự cố, vui lòng thử lại sau.");
             }
         }
+
 
         if (!errors.isEmpty()) {
             req.setAttribute("form", form);

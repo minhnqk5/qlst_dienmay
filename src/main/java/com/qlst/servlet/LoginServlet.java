@@ -16,7 +16,7 @@ import javax.servlet.http.HttpSession;
 @WebServlet({"/login", "/logout"})
 public class LoginServlet extends HttpServlet {
 
-    private static final String VIEW = "/WEB-INF/views/login.jsp";
+    private static final String VIEW = "/WEB-INF/views/manager/login.jsp";
     private MemberDAO memberDAO;
 
     @Override

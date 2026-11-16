@@ -13,44 +13,44 @@
 
     <form method="post" action="<c:url value='/register'/>" novalidate autocomplete="off">
         <div class="field ${not empty errors.ten ? 'has-error' : ''}">
-            <label for="inTen">Họ tên</label>
+            <label for="inTen">Họ tên <span class="required-mark" aria-hidden="true">*</span></label>
             <input id="inTen" name="inTen" type="text" maxlength="255" value="<c:out value='${form.ten}'/>">
             <c:if test="${not empty errors.ten}"><small class="err"><c:out value="${errors.ten}"/></small></c:if>
         </div>
 
         <div class="row">
             <div class="field ${not empty errors.sdt ? 'has-error' : ''}">
-                <label for="inSdt">Số điện thoại</label>
+                <label for="inSdt">Số điện thoại <span class="required-mark" aria-hidden="true">*</span></label>
                 <input id="inSdt" name="inSdt" type="tel" maxlength="11" value="<c:out value='${form.sdt}'/>">
                 <c:if test="${not empty errors.sdt}"><small class="err"><c:out value="${errors.sdt}"/></small></c:if>
             </div>
             <div class="field ${not empty errors.email ? 'has-error' : ''}">
-                <label for="inEmail">Email</label>
+                <label for="inEmail">Email <span class="required-mark" aria-hidden="true">*</span></label>
                 <input id="inEmail" name="inEmail" type="email" maxlength="255" value="<c:out value='${form.email}'/>">
                 <c:if test="${not empty errors.email}"><small class="err"><c:out value="${errors.email}"/></small></c:if>
             </div>
         </div>
 
         <div class="field ${not empty errors.diaChi ? 'has-error' : ''}">
-            <label for="inDiaChi">Địa chỉ</label>
+            <label for="inDiaChi">Địa chỉ <span class="required-mark" aria-hidden="true">*</span></label>
             <input id="inDiaChi" name="inDiaChi" type="text" maxlength="255" value="<c:out value='${form.diaChi}'/>">
             <c:if test="${not empty errors.diaChi}"><small class="err"><c:out value="${errors.diaChi}"/></small></c:if>
         </div>
 
         <div class="field ${not empty errors.tenDangNhap ? 'has-error' : ''}">
-            <label for="inTenDangNhap">Tên đăng nhập</label>
+            <label for="inTenDangNhap">Tên đăng nhập <span class="required-mark" aria-hidden="true">*</span></label>
             <input id="inTenDangNhap" name="inTenDangNhap" type="text" maxlength="50" value="<c:out value='${form.tenDangNhap}'/>">
             <c:if test="${not empty errors.tenDangNhap}"><small class="err"><c:out value="${errors.tenDangNhap}"/></small></c:if>
         </div>
 
         <div class="row">
             <div class="field ${not empty errors.matKhau ? 'has-error' : ''}">
-                <label for="inMatKhau">Mật khẩu</label>
+                <label for="inMatKhau">Mật khẩu <span class="required-mark" aria-hidden="true">*</span></label>
                 <input id="inMatKhau" name="inMatKhau" type="password" maxlength="72" autocomplete="new-password">
                 <c:if test="${not empty errors.matKhau}"><small class="err"><c:out value="${errors.matKhau}"/></small></c:if>
             </div>
             <div class="field ${not empty errors.xacNhanMatKhau ? 'has-error' : ''}">
-                <label for="inXacNhanMatKhau">Xác nhận mật khẩu</label>
+                <label for="inXacNhanMatKhau">Xác nhận mật khẩu <span class="required-mark" aria-hidden="true">*</span></label>
                 <input id="inXacNhanMatKhau" name="inXacNhanMatKhau" type="password" maxlength="72" autocomplete="new-password">
                 <c:if test="${not empty errors.xacNhanMatKhau}"><small class="err"><c:out value="${errors.xacNhanMatKhau}"/></small></c:if>
             </div>

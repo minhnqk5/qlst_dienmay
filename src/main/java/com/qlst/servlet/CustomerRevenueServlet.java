@@ -1,6 +1,7 @@
 package com.qlst.servlet;
 
-import com.qlst.dao.CustomerRevenueStatisticDAO;
+import com.qlst.dao.CustomerRevenueStatisticsDAO;
+import com.qlst.model.CustomerRevenueStatistics9;
 import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
@@ -14,11 +15,11 @@ import javax.servlet.http.HttpServletResponse;
 public class CustomerRevenueServlet extends HttpServlet {
 
     private static final String VIEW = "/WEB-INF/views/manager/customerRevenue.jsp";
-    private CustomerRevenueStatisticDAO statisticDAO;
+    private CustomerRevenueStatisticsDAO statisticDAO;
 
     @Override
     public void init() {
-        statisticDAO = new CustomerRevenueStatisticDAO();
+        statisticDAO = new CustomerRevenueStatisticsDAO();
     }
 
     @Override
@@ -35,7 +36,14 @@ public class CustomerRevenueServlet extends HttpServlet {
                 if (from.after(to)) {
                     req.setAttribute("error", "Thời gian không hợp lệ: ngày bắt đầu phải trước hoặc bằng ngày kết thúc.");
                 } else {
-                    req.setAttribute("listDoanhThuKH", statisticDAO.getCustomerRevenueStatistics(from, to));
+                    CustomerRevenueStatistics9[] statistics = statisticDAO.getCustomerRevenueStatistics(from, to);
+                    double tongDoanhThu = 0;
+                    for (CustomerRevenueStatistics9 statistic : statistics) {
+                        tongDoanhThu += statistic.getDoanhThuTrenKhachHang();
+                    }
+                    req.setAttribute("listDoanhThuKH", statistics);
+                    req.setAttribute("tongSoKhachMuaHang", statistics.length);
+                    req.setAttribute("tongDoanhThu", tongDoanhThu);
                     req.setAttribute("searched", true);
                 }
             } catch (IllegalArgumentException e) {

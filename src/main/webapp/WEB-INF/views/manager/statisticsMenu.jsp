@@ -5,10 +5,10 @@
 <section class="card narrow">
     <h1>Xem báo cáo</h1>
     <p class="muted">Chọn loại thống kê:</p>
-    <ul class="menu" id="loaiThongKe">
-        <li class="disabled"><span>Thống kê doanh thu</span></li>
-        <li class="disabled"><span>Thống kê mặt hàng theo doanh thu</span></li>
-        <li><a href="<c:url value='/manager/statistics/customer-revenue'/>">Thống kê khách hàng theo doanh thu</a></li>
-    </ul>
-    <a class="btn btn-ghost" id="quayLai" href="<c:url value='/manager/home'/>">← Quay lại</a>
+    <div>
+        <button class="btn" id="thongKeDoanhThu" onclick="location.href='<c:url value='/manager/statistics/customer-revenue'/>'">Thống kê doanh thu</button>
+    </div>
+    <div>
+        <a class="btn btn-ghost" id="quayLai" href="<c:url value='/manager/home'/>">← Quay lại</a>
+    </div>
 </section>

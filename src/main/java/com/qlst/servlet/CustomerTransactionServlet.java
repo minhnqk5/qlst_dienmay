@@ -4,13 +4,12 @@ import com.qlst.dao.CustomerDAO;
 import com.qlst.dao.OnlineInvoiceDAO;
 import com.qlst.dao.WalkInInvoiceDAO;
 import com.qlst.model.Customer9;
+import com.qlst.model.CustomerTransactionStatistics9;
 import com.qlst.model.OnlineInvoice9;
 import com.qlst.model.WalkInInvoice9;
 import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -54,32 +53,21 @@ public class CustomerTransactionServlet extends HttpServlet {
             OnlineInvoice9[] online = onlineInvoiceDAO.getOnlineInvoice(customerId, from, to);
             WalkInInvoice9[] walkIn = walkInInvoiceDAO.getWalkInInvoice(customer.getSdt(), from, to);
 
-            double totalAmount = 0;
-            int totalQuantity = 0;
-            for (OnlineInvoice9 inv : online) {
-                totalAmount += inv.getThanhTien();
-                totalQuantity += inv.getOrder().getTongSoLuong();
+            int tongSoLuong = 0;
+            double tongTien = 0;
+            for (OnlineInvoice9 invoice : online) {
+                tongSoLuong += invoice.getOrder().getTongSoLuong();
+                tongTien += invoice.getThanhTien();
             }
-            for (WalkInInvoice9 inv : walkIn) {
-                totalAmount += inv.getTongTien();
-                totalQuantity += inv.getTongSoLuong();
-            }
-
-            List<Object> listGiaoDich = new ArrayList<>();
-            int i = 0;
-            int j = 0;
-            while (i < online.length || j < walkIn.length) {
-                boolean takeOnline = j >= walkIn.length
-                        || (i < online.length && !online[i].getNgayGio().after(walkIn[j].getNgayGio()));
-                listGiaoDich.add(takeOnline ? online[i++] : walkIn[j++]);
+            for (WalkInInvoice9 invoice : walkIn) {
+                tongSoLuong += invoice.getTongSoLuong();
+                tongTien += invoice.getTongTien();
             }
 
-            req.setAttribute("customer", customer);
-            req.setAttribute("listOnlineInvoice", online);
-            req.setAttribute("listWalkInInvoice", walkIn);
-            req.setAttribute("listGiaoDich", listGiaoDich);
-            req.setAttribute("totalAmount", totalAmount);
-            req.setAttribute("totalQuantity", totalQuantity);
+            CustomerTransactionStatistics9 transaction =
+                    new CustomerTransactionStatistics9(customer, tongSoLuong, tongTien, online, walkIn);
+
+            req.setAttribute("transaction", transaction);
             req.setAttribute("ngayBatDau", from.toString());
             req.setAttribute("ngayKetThuc", to.toString());
         } catch (SQLException e) {
