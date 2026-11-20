@@ -24,7 +24,18 @@ public class CustomerDAO extends DAO {
             ps.setString(2, c.getSdt());
             ps.setString(3, c.getTenDangNhap());
             try (ResultSet rs = ps.executeQuery()) {
-                return rs.next() ? map(rs) : null;
+                if (rs.next()) {
+                    Customer9 customer = new Customer9();
+                    customer.setId(rs.getInt("id"));
+                    customer.setTenDangNhap(rs.getString("tenDangNhap"));
+                    customer.setTen(rs.getString("ten"));
+                    customer.setSdt(rs.getString("sdt"));
+                    customer.setEmail(rs.getString("email"));
+                    customer.setDiaChi(rs.getString("diaChi"));
+                    return customer;
+                } else {
+                    return null;
+                }
             }
         }
     }
@@ -55,20 +66,24 @@ public class CustomerDAO extends DAO {
         try (PreparedStatement ps = connection().prepareStatement(sql)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
-                
-                Customer9 c = new Customer9();
-                c.setId(rs.getInt("id"));
-                c.setTenDangNhap(rs.getString("tenDangNhap"));
-                c.setTen(rs.getString("ten"));
-                c.setSdt(rs.getString("sdt"));
-                c.setEmail(rs.getString("email"));
-                c.setDiaChi(rs.getString("diaChi"));
-                
-                return c;
+                if (rs.next()) {
+                    Customer9 c = new Customer9();
+                    c.setId(rs.getInt("id"));
+                    c.setTenDangNhap(rs.getString("tenDangNhap"));
+                    c.setTen(rs.getString("ten"));
+                    c.setSdt(rs.getString("sdt"));
+                    c.setEmail(rs.getString("email"));
+                    c.setDiaChi(rs.getString("diaChi"));
+                    
+                    return c;
+                } else {
+                    return null;
+                }
             }
-         catch (SQLException e) {
+        } catch (SQLException e) {
             throw new SQLException("Lỗi khi truy vấn khách hàng theo ID", e);
+         }
     }
 
-
 }
+
