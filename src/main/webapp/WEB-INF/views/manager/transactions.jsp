@@ -36,6 +36,7 @@
                     <th class="num">Tổng tiền (VNĐ)</th>
                 </tr>
                 </thead>
+                
                 <tbody>
                 <c:set var="rowCount" value="0"/>
                 <c:forEach var="t" items="${transaction.listOnlineInvoice}">

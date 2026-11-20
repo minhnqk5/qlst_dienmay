@@ -34,7 +34,7 @@ public class OnlineInvoiceDAO extends DAO {
             ps.setInt(1, customerId);
             ps.setDate(2, from);
             ps.setDate(3, to);
-            
+
             try (ResultSet rs = ps.executeQuery()) {
                 Customer9 customer = new Customer9();
                 customer.setId(customerId);
@@ -76,6 +76,7 @@ public class OnlineInvoiceDAO extends DAO {
         List<OrderDetail9> details = new ArrayList<>();
         try (PreparedStatement ps = connection().prepareStatement(SQL_DETAIL)) {
             ps.setInt(1, orderId);
+            
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Product9 p = new Product9();

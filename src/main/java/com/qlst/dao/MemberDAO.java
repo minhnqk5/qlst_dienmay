@@ -17,6 +17,7 @@ public class MemberDAO extends DAO {
                    + "WHERE mb.tenDangNhap = ?";
         try (PreparedStatement ps = connection().prepareStatement(sql)) {
             ps.setString(1, m.getTenDangNhap());
+            
             try (ResultSet rs = ps.executeQuery()) {
                 if (!rs.next()) {
                     return null;

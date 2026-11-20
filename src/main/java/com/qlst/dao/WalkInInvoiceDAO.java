@@ -69,6 +69,7 @@ public class WalkInInvoiceDAO extends DAO {
         List<WalkInInvoiceDetail9> details = new ArrayList<>();
         try (PreparedStatement ps = connection().prepareStatement(SQL_DETAIL)) {
             ps.setInt(1, walkInInvoiceId);
+            
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Product9 product = new Product9();
