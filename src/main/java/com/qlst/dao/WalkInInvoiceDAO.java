@@ -14,20 +14,15 @@ import java.util.List;
 
 public class WalkInInvoiceDAO extends DAO {
 
+    public WalkInInvoiceDAO() {
+            super();
+        }
+
     private static final String SQL =
         "SELECT w.id, w.ngayGio, w.tenKhachHang, w.sdt, w.tongTien, w.salesStaff_id, m.ten AS staffName "
       + "FROM tblwalkininvoice9 w JOIN tblmember9 m ON m.id = w.salesStaff_id "
       + "WHERE w.sdt = ? AND w.ngayGio >= ? AND w.ngayGio < DATE_ADD(?, INTERVAL 1 DAY) "
       + "ORDER BY w.ngayGio";
-
-    private static final String SQL_DETAIL =
-        "SELECT d.id, d.soLuong, d.donGia, d.thanhTien, p.id AS product_id, p.tenMatHang "
-      + "FROM tblwalkininvoicedetail9 d JOIN tblproduct9 p ON p.id = d.product_id "
-      + "WHERE d.walkInInvoice_id = ? ORDER BY d.id";
-
-    public WalkInInvoiceDAO() {
-        super();
-    }
 
     public WalkInInvoice9[] getWalkInInvoice(String sdt, Date from, Date to) throws SQLException {
         List<WalkInInvoice9> list = new ArrayList<>();
@@ -58,6 +53,17 @@ public class WalkInInvoiceDAO extends DAO {
         }
         return list.toArray(new WalkInInvoice9[0]);
     }
+
+
+
+
+
+    
+
+    private static final String SQL_DETAIL =
+            "SELECT d.id, d.soLuong, d.donGia, d.thanhTien, p.id AS product_id, p.tenMatHang "
+        + "FROM tblwalkininvoicedetail9 d JOIN tblproduct9 p ON p.id = d.product_id "
+        + "WHERE d.walkInInvoice_id = ? ORDER BY d.id";
 
     private WalkInInvoiceDetail9[] getWalkInInvoiceDetail(int walkInInvoiceId) throws SQLException {
         List<WalkInInvoiceDetail9> details = new ArrayList<>();

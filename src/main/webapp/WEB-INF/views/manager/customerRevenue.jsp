@@ -29,8 +29,6 @@
 
 
 
-
-
     <table class="table" id="tblTKDoanhThuKH">
         <thead>
         <tr>

@@ -55,19 +55,20 @@ public class CustomerDAO extends DAO {
         try (PreparedStatement ps = connection().prepareStatement(sql)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
-                return rs.next() ? map(rs) : null;
+                
+                Customer9 c = new Customer9();
+                c.setId(rs.getInt("id"));
+                c.setTenDangNhap(rs.getString("tenDangNhap"));
+                c.setTen(rs.getString("ten"));
+                c.setSdt(rs.getString("sdt"));
+                c.setEmail(rs.getString("email"));
+                c.setDiaChi(rs.getString("diaChi"));
+                
+                return c;
             }
-        }
+         catch (SQLException e) {
+            throw new SQLException("Lỗi khi truy vấn khách hàng theo ID", e);
     }
 
-    private Customer9 map(ResultSet rs) throws SQLException {
-        Customer9 c = new Customer9();
-        c.setId(rs.getInt("id"));
-        c.setTenDangNhap(rs.getString("tenDangNhap"));
-        c.setTen(rs.getString("ten"));
-        c.setSdt(rs.getString("sdt"));
-        c.setEmail(rs.getString("email"));
-        c.setDiaChi(rs.getString("diaChi"));
-        return c;
-    }
+
 }

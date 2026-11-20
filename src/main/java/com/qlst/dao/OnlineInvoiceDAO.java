@@ -14,20 +14,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OnlineInvoiceDAO extends DAO {
+    
+    public OnlineInvoiceDAO() {
+            super();
+        }
 
+        
     private static final String SQL_INVOICE =
         "SELECT oi.id, oi.ngayGio, oi.thanhTien, o.id AS order_id, o.ngayDat, o.tinhTrangThanhToan, o.diaChiGiaoHang "
       + "FROM tblonlineinvoice9 oi JOIN tblorder9 o ON o.id = oi.order_id "
       + "WHERE o.customer_id = ? AND oi.ngayGio >= ? AND oi.ngayGio < DATE_ADD(?, INTERVAL 1 DAY) "
       + "ORDER BY oi.ngayGio";
 
-    private static final String SQL_DETAIL =
-        "SELECT d.id, d.soLuong, d.donGia, d.thanhTien, p.id AS product_id, p.tenMatHang "
-      + "FROM tblorderdetail9 d JOIN tblproduct9 p ON p.id = d.product_id WHERE d.order_id = ? ORDER BY d.id";
-
-    public OnlineInvoiceDAO() {
-        super();
-    }
 
     public OnlineInvoice9[] getOnlineInvoice(int customerId, Date from, Date to) throws SQLException {
         List<OnlineInvoice9> list = new ArrayList<>();
@@ -61,6 +59,14 @@ public class OnlineInvoiceDAO extends DAO {
         }
         return list.toArray(new OnlineInvoice9[0]);
     }
+
+
+
+
+
+    private static final String SQL_DETAIL =
+            "SELECT d.id, d.soLuong, d.donGia, d.thanhTien, p.id AS product_id, p.tenMatHang "
+        + "FROM tblorderdetail9 d JOIN tblproduct9 p ON p.id = d.product_id WHERE d.order_id = ? ORDER BY d.id";
 
     private OrderDetail9[] getOrderDetail(int orderId) throws SQLException {
         List<OrderDetail9> details = new ArrayList<>();
