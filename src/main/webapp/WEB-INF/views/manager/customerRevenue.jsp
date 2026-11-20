@@ -49,7 +49,7 @@
                 <c:param name="ngayBatDau" value="${ngayBatDau}"/>
                 <c:param name="ngayKetThuc" value="${ngayKetThuc}"/>
             </c:url>
-            <tr class="clickable" onclick="location.href='<c:out value="${detailUrl}"/>'">
+            <tr>
                 <td class="num">${st.count}</td>
                 <td><a class="lnkcustomerDetail" href="<c:out value="${detailUrl}"/>"><c:out value="${s.maKhachHang}"/></a></td>
                 <td><a class="lnkcustomerDetail" href="<c:out value="${detailUrl}"/>"><c:out value="${s.ten}"/></a></td>
@@ -78,7 +78,6 @@
             </tfoot>
         </c:if>
     </table>
-
 
 
 

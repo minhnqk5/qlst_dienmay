@@ -29,14 +29,17 @@ public class OnlineInvoiceDAO extends DAO {
 
     public OnlineInvoice9[] getOnlineInvoice(int customerId, Date from, Date to) throws SQLException {
         List<OnlineInvoice9> list = new ArrayList<>();
+
         try (PreparedStatement ps = connection().prepareStatement(SQL_INVOICE)) {
             ps.setInt(1, customerId);
             ps.setDate(2, from);
             ps.setDate(3, to);
+            
             try (ResultSet rs = ps.executeQuery()) {
+                Customer9 customer = new Customer9();
+                customer.setId(customerId);
+                
                 while (rs.next()) {
-                    Customer9 customer = new Customer9();
-                    customer.setId(customerId);
 
                     Order9 order = new Order9();
                     order.setId(rs.getInt("order_id"));
@@ -50,6 +53,7 @@ public class OnlineInvoiceDAO extends DAO {
                     inv.setNgayGio(toDate(rs.getTimestamp("ngayGio")));
                     inv.setThanhTien(rs.getDouble("thanhTien"));
                     inv.setOrder(order);
+                    
                     list.add(inv);
                 }
             }

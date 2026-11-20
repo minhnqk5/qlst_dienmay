@@ -50,6 +50,7 @@ public class CustomerTransactionServlet extends HttpServlet {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND);
                 return;
             }
+            
             OnlineInvoice9[] online = onlineInvoiceDAO.getOnlineInvoice(customerId, from, to);
             WalkInInvoice9[] walkIn = walkInInvoiceDAO.getWalkInInvoice(customer.getSdt(), from, to);
 
